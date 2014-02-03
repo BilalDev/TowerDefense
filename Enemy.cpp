@@ -11,41 +11,22 @@ Enemy::Enemy(int type_enemy) : life(3), type(type_enemy)
 	
 	if (type_enemy == 1)
 	{
-		SDL_Surface *enemy_1 = IMG_Load("image/enemy_1.png");
-		SDL_Rect frame1 = { RIGHT * SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK };
-		
-		image = enemy_1;
-		current_frame = frame1;
+		image = IMG_Load("image/enemy_1.png");
 		velocity = 1;
 	}
 	else if (type_enemy == 2)
 	{
-		SDL_Surface *enemy_2 = IMG_Load("image/enemy_2.png");
-		SDL_Rect frame2 = { RIGHT * SIZE_BLOCK, 0, SIZE_BLOCK, SIZE_BLOCK };
-		
-		image = enemy_2;
-		current_frame = frame2;
+		image = IMG_Load("image/enemy_2.png");
 		velocity = 2;
 	}
 	else if (type_enemy == 3)
 	{
-		SDL_Surface *enemy_3 = IMG_Load("image/enemy_3.png");
-		SDL_Rect frame3 = { RIGHT * SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK };
-		
-		image = enemy_3;
-		current_frame = frame3;
+		image = IMG_Load("image/enemy_3.png");
 		velocity = 3;
 	}
 
+	current_frame = { RIGHT * SIZE_BLOCK, 0, SIZE_BLOCK, SIZE_BLOCK };
 	position = pos;
-}
-
-
-Enemy::Enemy(SDL_Surface *img, SDL_Rect *frame, SDL_Rect *pos, int veloc, int type_enemy) : life(3), velocity(veloc), type(type_enemy)
-{
-	image = img;
-	current_frame = *frame;
-	position = *pos;
 }
 
 

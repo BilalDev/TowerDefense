@@ -17,7 +17,6 @@ public:
 	// CONSTRUCTOR DESTRUCTOR
 	Enemy();
 	Enemy(int type_enemy);
-	Enemy(SDL_Surface *img, SDL_Rect *frame, SDL_Rect *pos, int veloc, int type_enemy);
 	~Enemy();
 	// METHOD
 	void move();

@@ -14,9 +14,12 @@ class Tower
 public:
 	// CONSTRUCTOR DESTRUCTOR
 	Tower();
-	Tower(int type_enemy);
-	Tower(SDL_Surface *img, SDL_Rect *frame, SDL_Rect *pos, int veloc, int type_enemy);
+	Tower(int type_tower);
+	Tower(SDL_Surface *img, SDL_Rect *frame, SDL_Rect *pos, int type_tower);
 	~Tower();
 private:
-
+	SDL_Rect	current_frame;
+	SDL_Rect	position;
+	SDL_Surface	*image;
+	int			type;
 };

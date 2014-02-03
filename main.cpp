@@ -141,9 +141,7 @@ int main(int argc, char** argv)
 					}
 				}
 				else if (isTowerSelected)
-				{
 					isTowerSelected = false;
-				}
 				break;
 			default:
 				break;
@@ -193,25 +191,22 @@ int main(int argc, char** argv)
 
 		// RENDER
 		SDL_BlitSurface(background, NULL, screen, NULL);
-
 		for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 			SDL_BlitSurface((*it).getImage(), &(*it).getFrame(), screen, &(*it).getPosition());
-
+		// menu
 		SDL_BlitSurface(menu, NULL, screen, &positionMenu);
 		SDL_BlitSurface(towers, NULL, screen, &positionTowers);
 		SDL_BlitSurface(points, NULL, screen, &positionPoints);
 		SDL_BlitSurface(life, NULL, screen, &positionLife);
 		if (isTowerSelected)
 			SDL_BlitSurface(towerSelected, &frameTowerSelected, screen, &positionTowerSelected);
-
-
 		if (valueLife <= 0)
 			SDL_BlitSurface(gameover, NULL, screen, &positionGO);
-
 		// DEBUG
 		SDL_BlitSurface(mouse, NULL, screen, &positionMouse);
 
 		SDL_Flip(screen);
+
 
 		if (1000 / FPS > SDL_GetTicks() - start)
 			SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
