@@ -14,6 +14,6 @@
 #include "Enemy.h"
 #include "Tower.h"
 
-int FPS = 50;
+Uint32 FPS = 100;
 
 #endif /* !HEADERS_H */
