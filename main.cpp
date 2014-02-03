@@ -5,7 +5,7 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	// WORLD VARIABLES
-	SDL_Surface *screen = NULL, *background = NULL, *menu = NULL, *towers = NULL;
+	SDL_Surface *screen = NULL, *background = NULL, *menu = NULL, *towersImg = NULL;
 	SDL_Rect positionMenu, positionTowers;
 	SDL_Event event;
 	bool play = true;
@@ -24,6 +24,10 @@ int main(int argc, char** argv)
 
 	// ENEMIES
 	vector<Enemy> enemies;
+	
+	// TOWERS
+	vector<Tower>	towers;
+	int				typeTower;
 
 	// TOWER SELECTED
 	SDL_Surface *towerSelected = NULL;
@@ -53,9 +57,9 @@ int main(int argc, char** argv)
 	background = IMG_Load("image/background.png");
 	menu = IMG_Load("image/menu.png");
 	positionMenu = { 0, 767 - menu->h };
-	towers = IMG_Load("image/towers.png");
-	positionTowers = { 0, 767 - towers->h };
-	sizeTowers = towers->w / 3;
+	towersImg = IMG_Load("image/towers.png");
+	positionTowers = { 0, 767 - towersImg->h };
+	sizeTowers = towersImg->w / 3;
 	
 	TTF_Init();
 	font40 = TTF_OpenFont("font/font.ttf", 40);
@@ -130,18 +134,31 @@ int main(int argc, char** argv)
 					if (event.motion.y >= positionTowers.y && event.motion.x <= (3 * sizeTowers))
 					{
 						if (event.motion.x >= 0 && event.motion.x < sizeTowers)
+						{
 							frameTowerSelected.x = 0 * SIZE_BLOCK;
+							typeTower = 1;
+						}
 						else if (event.motion.x >= sizeTowers && event.motion.x < 2 * sizeTowers)
+						{
 							frameTowerSelected.x = 1 * SIZE_BLOCK;
+							typeTower = 2;
+						}
 						else if (event.motion.x >= 2 * sizeTowers && event.motion.x < 3 * sizeTowers)
+						{
 							frameTowerSelected.x = 2 * SIZE_BLOCK;
+							typeTower = 3;
+						}
 						positionTowerSelected.x = event.motion.x - (SIZE_BLOCK / 2);
 						positionTowerSelected.y = event.motion.y - (SIZE_BLOCK / 2);
 						isTowerSelected = true;
 					}
 				}
 				else if (isTowerSelected)
+				{
 					isTowerSelected = false;
+					Tower t = Tower(typeTower, positionTowerSelected);
+					towers.push_back(t);
+				}
 				break;
 			default:
 				break;
@@ -153,6 +170,9 @@ int main(int argc, char** argv)
 		// LOGIC
 		if (valueLife > 0)
 		{
+			// TOWER'S LOGIC
+
+			// ENEMY'S LOGIC
 			if (SDL_GetTicks() % 300 == 0)
 			{
 				// RAND [1 ; 3];
@@ -161,7 +181,6 @@ int main(int argc, char** argv)
 				Enemy e = Enemy(random);
 				enemies.push_back(e);
 			}
-			// ENEMY'S LOGIC
 			for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 			{
 				// if no more life, stop position & start animation of destruction
@@ -193,9 +212,11 @@ int main(int argc, char** argv)
 		SDL_BlitSurface(background, NULL, screen, NULL);
 		for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 			SDL_BlitSurface((*it).getImage(), &(*it).getFrame(), screen, &(*it).getPosition());
+		for (vector<Tower>::iterator it = towers.begin(); it != towers.end(); ++it)
+			SDL_BlitSurface((*it).getImage(), &(*it).getFrame(), screen, &(*it).getPosition());
 		// menu
 		SDL_BlitSurface(menu, NULL, screen, &positionMenu);
-		SDL_BlitSurface(towers, NULL, screen, &positionTowers);
+		SDL_BlitSurface(towersImg, NULL, screen, &positionTowers);
 		SDL_BlitSurface(points, NULL, screen, &positionPoints);
 		SDL_BlitSurface(life, NULL, screen, &positionLife);
 		if (isTowerSelected)
@@ -212,14 +233,18 @@ int main(int argc, char** argv)
 			SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
 	}
 
+	printf("%d", towers.size());
+
 	// FREE
 	for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)
+		SDL_FreeSurface((*it).getImage());
+	for (vector<Tower>::iterator it = towers.begin(); it != towers.end(); ++it)
 		SDL_FreeSurface((*it).getImage());
 
 	SDL_FreeSurface(background);
 	SDL_FreeSurface(gameover);
 	SDL_FreeSurface(menu);
-	SDL_FreeSurface(towers);
+	SDL_FreeSurface(towersImg);
 	SDL_FreeSurface(life);
 
 	TTF_CloseFont(font40);

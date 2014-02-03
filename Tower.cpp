@@ -5,38 +5,42 @@ Tower::Tower()
 {}
 
 
-Tower::Tower(int type_tower) : type(type_tower)
+Tower::Tower(int type_tower, SDL_Rect pos) : type(type_tower), position(pos)
 {
-	SDL_Rect pos = { 0, 105 };
-
 	if (type_tower == 1)
-	{
-		SDL_Surface *enemy_1 = IMG_Load("image/tower_1.png");
-		SDL_Rect frame1 = { 0 * SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK };
-
-		image = enemy_1;
-		current_frame = frame1;
-	}
+		image = IMG_Load("image/tower_1.png");
 	else if (type_tower == 2)
-	{
-		SDL_Surface *enemy_2 = IMG_Load("image/tower_2.png");
-		SDL_Rect frame2 = { 0 * SIZE_BLOCK, 0, SIZE_BLOCK, SIZE_BLOCK };
-
-		image = enemy_2;
-		current_frame = frame2;
-	}
+		image = IMG_Load("image/tower_2.png");
 	else if (type_tower == 3)
-	{
-		SDL_Surface *enemy_3 = IMG_Load("image/tower_3.png");
-		SDL_Rect frame3 = { 0 * SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK, SIZE_BLOCK };
+		image = IMG_Load("image/tower_3.png");
 
-		image = enemy_3;
-		current_frame = frame3;
-	}
-
-	position = pos;
+	current_frame = { 0 * SIZE_BLOCK, 0, SIZE_BLOCK, SIZE_BLOCK };
 }
 
 
 Tower::~Tower()
 {}
+
+
+int Tower::getType()
+{
+	return this->type;
+}
+
+
+SDL_Rect Tower::getFrame()
+{
+	return this->current_frame;
+}
+
+
+SDL_Rect Tower::getPosition()
+{
+	return this->position;
+}
+
+
+SDL_Surface* Tower::getImage()
+{
+	return this->image;
+}
