@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 	SDL_Color   yellow = { 241, 196, 15 };
 
 	// MENU
-	int			valuePoints = 0, valueLife = 5;
+	int			valuePoints = 0, valueLife = 15;
 	string		textPoints, textLife;
 	SDL_Surface	*points = NULL, *life = NULL, *gameover = NULL;
 	SDL_Rect	positionPoints, positionLife, positionGO;
@@ -52,15 +52,15 @@ int main(int argc, char** argv)
 	}
 
 	// Init screen
-	screen = SDL_SetVideoMode(944, 767, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	screen = SDL_SetVideoMode(WINDOW_W, WINDOW_H, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	SDL_WM_SetCaption("Tower Defense", NULL);
 
 	// Init game, font, menu
 	background = IMG_Load("image/background.png");
 	menu = IMG_Load("image/menu.png");
-	positionMenu = { 0, 767 - menu->h };
+	positionMenu = { 0, WINDOW_H - menu->h };
 	towersImg = IMG_Load("image/towers.png");
-	positionTowers = { 0, 767 - towersImg->h };
+	positionTowers = { 0, WINDOW_H - towersImg->h };
 	sizeTowers = towersImg->w / 3;
 	
 	TTF_Init();
@@ -71,14 +71,14 @@ int main(int argc, char** argv)
 	positionPoints.x = 700;
 	positionPoints.y = positionMenu.y + 10;
 
-	textLife = "LIFE : 5";
+	textLife = "LIFE : " + to_string(valueLife);
 	life = TTF_RenderText_Blended(font40, textLife.c_str(), white);
 	positionLife.x = 700;
 	positionLife.y = positionPoints.y + 50;
 
 	gameover = TTF_RenderText_Blended(font100, "GAME OVER", white);
-	positionGO.x = 949 / 2 - (gameover->w / 2);
-	positionGO.y = 767 / 2 - (gameover->h / 2);
+	positionGO.x = WINDOW_W / 2 - (gameover->w / 2);
+	positionGO.y = WINDOW_H / 2 - (gameover->h / 2);
 
 
 	towerSelected = IMG_Load("image/mini-towers.png");
@@ -176,6 +176,7 @@ int main(int argc, char** argv)
 			for (vector<Tower>::iterator tower = towers.begin(); tower != towers.end(); ++tower)
 			{
 				(*tower).fire();
+				(*tower).collision(&enemies);
 			}
 
 			// ENEMY'S LOGIC
@@ -184,7 +185,7 @@ int main(int argc, char** argv)
 				// RAND [1 ; 3];
 				int random = std::rand() % (4 - 1) + 1;
 
-				Enemy e = Enemy(random);
+				Enemy e = Enemy(2);
 				enemies.push_back(e);
 			}
 			for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end(); ++enemy)
@@ -200,6 +201,7 @@ int main(int argc, char** argv)
 				{
 					SDL_FreeSurface((*enemy).getImage());
 					enemies.erase(enemy);
+					break;
 				}
 				// if enemy OOTB, free then delete from vector and take off a life
 				if ((*enemy).getPosition().y >= 620)
@@ -238,11 +240,9 @@ int main(int argc, char** argv)
 		SDL_Flip(screen);
 
 
-		if (1000 / FPS > SDL_GetTicks() - start)
-			SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
+		if (500 / FPS > SDL_GetTicks() - start)
+			SDL_Delay(500 / FPS - (SDL_GetTicks() - start));
 	}
-
-	printf("%d", towers.size());
 
 	// FREE
 	for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)

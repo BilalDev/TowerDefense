@@ -2,6 +2,7 @@
 #define TOWER_H
 
 	#include "header.h"
+	#include "Enemy.h"
 
 	class Tower
 	{
@@ -13,7 +14,7 @@
 		~Tower();
 		// METHOD
 		void		fire();
-		bool		collision();
+		void		collision(std::vector<Enemy> *enemies);
 		// GETTER SETTER
 		int			getType();
 		SDL_Rect	getFrame();

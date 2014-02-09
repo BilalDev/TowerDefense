@@ -217,7 +217,6 @@ void Enemy::destruction()
 {
 	if (life == 0)
 	{
-		image = NULL;
 		image = IMG_Load("image/explosion.png");
 		current_frame.x = -SIZE_BLOCK;
 		current_frame.y = 0;

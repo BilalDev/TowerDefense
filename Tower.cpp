@@ -1,5 +1,6 @@
 #include "Tower.h"
 
+using namespace std;
 
 Tower::Tower()
 {}
@@ -71,25 +72,36 @@ void Tower::fire()
 {
 	if (positionBullet.y == 0)
 	{
-		positionBullet.x = getPosition().x + (SIZE_BLOCK / 2 - getBullet()->w / 2);
-		positionBullet.y = getPosition().y + (SIZE_BLOCK / 2);
+		positionBullet.x = position.x + (SIZE_BLOCK / 2 - bullet->w / 2);
+		positionBullet.y = position.y + (SIZE_BLOCK / 2);
 	}
 
 	else
 	{
 		positionBullet = getPositionBullet();
-		positionBullet.y += 1;
+		positionBullet.y += 5;
 	}
 }
 
 
-bool Tower::collision()
+void Tower::collision(vector<Enemy> *enemies)
 {
-	if (positionBullet.y >= 0)
+	if (positionBullet.y >= BOARD_H || positionBullet.y <= 0)
 	{
-		std::cout << "TRUE" << std::endl;
-		return true;
+		positionBullet.y = position.y + (SIZE_BLOCK / 2);
 	}
 	else
-		return false;
+	{
+		for (vector<Enemy>::iterator &enemy = enemies->begin(); enemy != enemies->end(); ++enemy)
+		{
+			if ((positionBullet.y >= enemy->getPosition().y) && (positionBullet.y <= enemy->getPosition().y + SIZE_BLOCK)
+				&& (positionBullet.y + bullet->h >= enemy->getPosition().y) && (positionBullet.y + bullet->h <= enemy->getPosition().y + SIZE_BLOCK)
+				&& (positionBullet.x >= enemy->getPosition().x) && (positionBullet.x <= enemy->getPosition().x + SIZE_BLOCK)
+				&& (positionBullet.x + bullet->w >= enemy->getPosition().x) && (positionBullet.x + bullet->w <= enemy->getPosition().x + SIZE_BLOCK))
+			{
+				positionBullet.y = position.y + (SIZE_BLOCK / 2);
+				enemy->setLife(enemy->getLife() - 1);
+			}
+		}
+	}
 }
