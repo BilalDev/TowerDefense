@@ -1,19 +1,16 @@
 #ifndef HEADERS_H
 #define HEADERS_H
 
-#define SIZE_BLOCK	59
+	#define SIZE_BLOCK	59
+	#define FPS			100
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
+	#include <SDL/SDL.h>
+	#include <SDL/SDL_image.h>
+	#include <SDL/SDL_ttf.h>
 
-#include <iostream>
-#include <vector>
-#include <time.h>
-
-#include "Enemy.h"
-#include "Tower.h"
-
-Uint32 FPS = 100;
+	#include <iostream>
+	#include <string>
+	#include <vector>
+	#include <time.h>
 
 #endif /* !HEADERS_H */

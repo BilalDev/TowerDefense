@@ -1,4 +1,6 @@
 #include "header.h"
+#include "Enemy.h"
+#include "Tower.h"
 
 using namespace std;
 
@@ -171,6 +173,10 @@ int main(int argc, char** argv)
 		if (valueLife > 0)
 		{
 			// TOWER'S LOGIC
+			for (vector<Tower>::iterator tower = towers.begin(); tower != towers.end(); ++tower)
+			{
+				(*tower).fire();
+			}
 
 			// ENEMY'S LOGIC
 			if (SDL_GetTicks() % 300 == 0)
@@ -181,25 +187,25 @@ int main(int argc, char** argv)
 				Enemy e = Enemy(random);
 				enemies.push_back(e);
 			}
-			for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)
+			for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end(); ++enemy)
 			{
 				// if no more life, stop position & start animation of destruction
-				if ((*it).getLife() == 0)
-					(*it).destruction();
+				if ((*enemy).getLife() == 0)
+					(*enemy).destruction();
 
-				(*it).move();
+				(*enemy).move();
 
 				// if destruction finished, free then delete from vector
-				if ((*it).getLife() == -2)
+				if ((*enemy).getLife() == -2)
 				{
-					SDL_FreeSurface((*it).getImage());
-					enemies.erase(it);
+					SDL_FreeSurface((*enemy).getImage());
+					enemies.erase(enemy);
 				}
 				// if enemy OOTB, free then delete from vector and take off a life
-				if ((*it).getPosition().y >= 620)
+				if ((*enemy).getPosition().y >= 620)
 				{
-					SDL_FreeSurface((*it).getImage());
-					enemies.erase(it);
+					SDL_FreeSurface((*enemy).getImage());
+					enemies.erase(enemy);
 					textLife = "LIFE : " + to_string(--valueLife);
 					life = TTF_RenderText_Blended(font40, textLife.c_str(), white);
 				}
@@ -213,7 +219,10 @@ int main(int argc, char** argv)
 		for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 			SDL_BlitSurface((*it).getImage(), &(*it).getFrame(), screen, &(*it).getPosition());
 		for (vector<Tower>::iterator it = towers.begin(); it != towers.end(); ++it)
+		{
 			SDL_BlitSurface((*it).getImage(), &(*it).getFrame(), screen, &(*it).getPosition());
+			SDL_BlitSurface((*it).getBullet(), NULL, screen, &(*it).getPositionBullet());
+		}
 		// menu
 		SDL_BlitSurface(menu, NULL, screen, &positionMenu);
 		SDL_BlitSurface(towersImg, NULL, screen, &positionTowers);
