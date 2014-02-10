@@ -5,24 +5,30 @@ Enemy::Enemy()
 {}
 
 
-Enemy::Enemy(int type_enemy) : life(3), type(type_enemy)
+Enemy::Enemy(int type_enemy) : type(type_enemy)
 {
 	SDL_Rect pos = { 0, 105 };
 	
 	if (type_enemy == 1)
 	{
-		image = IMG_Load("image/enemy_1.png");
-		velocity = 1;
+		image		= IMG_Load("image/enemy_1.png");
+		velocity	= 1;
+		points		= 20;
+		life		= 3;
 	}
 	else if (type_enemy == 2)
 	{
-		image = IMG_Load("image/enemy_2.png");
-		velocity = 2;
+		image		= IMG_Load("image/enemy_2.png");
+		velocity	= 2;
+		points		= 50;
+		life		= 5;
 	}
 	else if (type_enemy == 3)
 	{
-		image = IMG_Load("image/enemy_3.png");
-		velocity = 3;
+		image		= IMG_Load("image/enemy_3.png");
+		velocity	= 3;
+		points		= 100;
+		life		= 7;
 	}
 
 	current_frame = { RIGHT * SIZE_BLOCK, 0, SIZE_BLOCK, SIZE_BLOCK };
@@ -32,6 +38,30 @@ Enemy::Enemy(int type_enemy) : life(3), type(type_enemy)
 
 Enemy::~Enemy()
 {
+}
+
+
+SDL_Rect Enemy::getFrame()
+{
+	return this->current_frame;
+}
+
+
+SDL_Rect Enemy::getPosition()
+{
+	return this->position;
+}
+
+
+SDL_Surface* Enemy::getImage()
+{
+	return this->image;
+}
+
+
+int Enemy::getType()
+{
+	return this->type;
 }
 
 
@@ -53,27 +83,9 @@ int Enemy::getVelocity()
 }
 
 
-int Enemy::getType()
+int Enemy::getPoints()
 {
-	return this->type;
-}
-
-
-SDL_Rect Enemy::getFrame()
-{
-	return this->current_frame;
-}
-
-
-SDL_Rect Enemy::getPosition()
-{
-	return this->position;
-}
-
-
-SDL_Surface* Enemy::getImage()
-{
-	return this->image;
+	return this->points;
 }
 
 

@@ -10,18 +10,21 @@ Tower::Tower(int type_tower, SDL_Rect pos) : type(type_tower), position(pos)
 {
 	if (type_tower == 1)
 	{
-		image = IMG_Load("image/tower_1.png");
-		bullet = IMG_Load("image/tower_1_bullet.png");
+		image	= IMG_Load("image/tower_1.png");
+		bullet	= IMG_Load("image/tower_1_bullet.png");
+		price	= 1000;
 	}
 	else if (type_tower == 2)
 	{
-		image = IMG_Load("image/tower_2.png");
-		bullet = IMG_Load("image/tower_2_bullet.png");
+		image	= IMG_Load("image/tower_2.png");
+		bullet	= IMG_Load("image/tower_2_bullet.png");
+		price	= 500;
 	}
 	else if (type_tower == 3)
 	{
-		image = IMG_Load("image/tower_3.png");
-		bullet = IMG_Load("image/tower_3_bullet.png");
+		image	= IMG_Load("image/tower_3.png");
+		bullet	= IMG_Load("image/tower_3_bullet.png");
+		price	= 100;
 	}
 
 	current_frame = { 0 * SIZE_BLOCK, 0, SIZE_BLOCK, SIZE_BLOCK };
@@ -30,12 +33,6 @@ Tower::Tower(int type_tower, SDL_Rect pos) : type(type_tower), position(pos)
 
 Tower::~Tower()
 {}
-
-
-int Tower::getType()
-{
-	return this->type;
-}
 
 
 SDL_Rect Tower::getFrame()
@@ -68,6 +65,18 @@ SDL_Surface* Tower::getBullet()
 }
 
 
+int Tower::getType()
+{
+	return this->type;
+}
+
+
+int Tower::getPrice()
+{
+	return this->price;
+}
+
+
 void Tower::fire()
 {
 	if (positionBullet.y == 0)
@@ -92,12 +101,34 @@ void Tower::collision(vector<Enemy> *enemies)
 	}
 	else
 	{
+		int leftBullet, leftEnemy;
+		int rightBullet, rightEnemy;
+		int topBullet, topEnemy;
+		int bottomBullet, bottomEnemy;
+
+		leftBullet = positionBullet.x;
+		rightBullet = positionBullet.x + bullet->w;
+		topBullet = positionBullet.y;
+		bottomBullet = positionBullet.y + bullet->h;
+
 		for (vector<Enemy>::iterator &enemy = enemies->begin(); enemy != enemies->end(); ++enemy)
 		{
-			if ((positionBullet.y >= enemy->getPosition().y) && (positionBullet.y <= enemy->getPosition().y + SIZE_BLOCK)
-				&& (positionBullet.y + bullet->h >= enemy->getPosition().y) && (positionBullet.y + bullet->h <= enemy->getPosition().y + SIZE_BLOCK)
-				&& (positionBullet.x >= enemy->getPosition().x) && (positionBullet.x <= enemy->getPosition().x + SIZE_BLOCK)
-				&& (positionBullet.x + bullet->w >= enemy->getPosition().x) && (positionBullet.x + bullet->w <= enemy->getPosition().x + SIZE_BLOCK))
+			bool collided = true;
+			leftEnemy = enemy->getPosition().x;
+			rightEnemy = enemy->getPosition().x + SIZE_BLOCK;
+			topEnemy = enemy->getPosition().y;
+			bottomEnemy = enemy->getPosition().y + SIZE_BLOCK;
+
+			if (bottomBullet <= topEnemy)
+				collided = false;
+			if (topBullet >= bottomEnemy)
+				collided = false;
+			if (rightBullet <= leftEnemy)
+				collided = false;
+			if (leftBullet >= rightEnemy)
+				collided = false;
+
+			if (collided)
 			{
 				positionBullet.y = position.y + (SIZE_BLOCK / 2);
 				enemy->setLife(enemy->getLife() - 1);

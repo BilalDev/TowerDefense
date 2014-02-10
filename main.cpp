@@ -13,15 +13,15 @@ int main(int argc, char** argv)
 	bool play = true;
 	
 	// FONT
-	TTF_Font    *font40 = NULL, *font100 = NULL;
+	TTF_Font    *font20 = NULL, *font100 = NULL;
 	SDL_Color   white = { 255, 255, 255 };
 	SDL_Color   yellow = { 241, 196, 15 };
 
 	// MENU
-	int			valuePoints = 0, valueLife = 15;
-	string		textPoints, textLife;
-	SDL_Surface	*points = NULL, *life = NULL, *gameover = NULL;
-	SDL_Rect	positionPoints, positionLife, positionGO;
+	int			valuePoints = 0, valueLife = 15, valueMoney = 100;
+	string		textPoints, textLife, textMoney;
+	SDL_Surface	*points = NULL, *life = NULL, *money = NULL, *gameover = NULL;
+	SDL_Rect	positionPoints, positionLife, positionMoney, positionGO;
 	int			sizeTowers;
 
 	// ENEMIES
@@ -64,17 +64,22 @@ int main(int argc, char** argv)
 	sizeTowers = towersImg->w / 3;
 	
 	TTF_Init();
-	font40 = TTF_OpenFont("font/font.ttf", 40);
+	font20 = TTF_OpenFont("font/font.ttf", 20);
 	font100 = TTF_OpenFont("font/font.ttf", 100);
 	textPoints = "POINTS : 0";
-	points = TTF_RenderText_Blended(font40, textPoints.c_str(), white);
+	points = TTF_RenderText_Blended(font20, textPoints.c_str(), white);
 	positionPoints.x = 700;
 	positionPoints.y = positionMenu.y + 10;
 
 	textLife = "LIFE : " + to_string(valueLife);
-	life = TTF_RenderText_Blended(font40, textLife.c_str(), white);
+	life = TTF_RenderText_Blended(font20, textLife.c_str(), white);
 	positionLife.x = 700;
-	positionLife.y = positionPoints.y + 50;
+	positionLife.y = positionPoints.y + 35;
+
+	textMoney = "MONEY : " + to_string(valueMoney);
+	money = TTF_RenderText_Blended(font20, textMoney.c_str(), white);
+	positionMoney.x = 700;
+	positionMoney.y = positionPoints.y + 70;
 
 	gameover = TTF_RenderText_Blended(font100, "GAME OVER", white);
 	positionGO.x = WINDOW_W / 2 - (gameover->w / 2);
@@ -90,7 +95,7 @@ int main(int argc, char** argv)
 	// INIT MOUSE INFORMATION
 	positionMouse = { 0, 0 };
 	textMouse = "x : 0 y : 0";
-	mouse = TTF_RenderText_Blended(font40, textMouse.c_str(), yellow);
+	mouse = TTF_RenderText_Blended(font20, textMouse.c_str(), yellow);
 
 
 
@@ -121,7 +126,7 @@ int main(int argc, char** argv)
 			case SDL_MOUSEMOTION:
 				// DEBUG
 				textMouse = "x : " + to_string(event.motion.x) + " y : " + to_string(event.motion.y);
-				mouse = TTF_RenderText_Blended(font40, textMouse.c_str(), yellow);
+				mouse = TTF_RenderText_Blended(font20, textMouse.c_str(), yellow);
 				
 				if (isTowerSelected)
 				{
@@ -185,14 +190,19 @@ int main(int argc, char** argv)
 				// RAND [1 ; 3];
 				int random = std::rand() % (4 - 1) + 1;
 
-				Enemy e = Enemy(2);
+				Enemy e = Enemy(random);
 				enemies.push_back(e);
 			}
 			for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end(); ++enemy)
 			{
 				// if no more life, stop position & start animation of destruction
 				if ((*enemy).getLife() == 0)
+				{
 					(*enemy).destruction();
+					valuePoints += (*enemy).getPoints();
+					textPoints = "POINTS : " + to_string(valuePoints);
+					points = TTF_RenderText_Blended(font20, textPoints.c_str(), white);
+				}
 
 				(*enemy).move();
 
@@ -209,7 +219,7 @@ int main(int argc, char** argv)
 					SDL_FreeSurface((*enemy).getImage());
 					enemies.erase(enemy);
 					textLife = "LIFE : " + to_string(--valueLife);
-					life = TTF_RenderText_Blended(font40, textLife.c_str(), white);
+					life = TTF_RenderText_Blended(font20, textLife.c_str(), white);
 				}
 			}
 		}
@@ -230,6 +240,7 @@ int main(int argc, char** argv)
 		SDL_BlitSurface(towersImg, NULL, screen, &positionTowers);
 		SDL_BlitSurface(points, NULL, screen, &positionPoints);
 		SDL_BlitSurface(life, NULL, screen, &positionLife);
+		SDL_BlitSurface(money, NULL, screen, &positionMoney);
 		if (isTowerSelected)
 			SDL_BlitSurface(towerSelected, &frameTowerSelected, screen, &positionTowerSelected);
 		if (valueLife <= 0)
@@ -240,23 +251,27 @@ int main(int argc, char** argv)
 		SDL_Flip(screen);
 
 
-		if (500 / FPS > SDL_GetTicks() - start)
-			SDL_Delay(500 / FPS - (SDL_GetTicks() - start));
+		if (1000 / FPS > SDL_GetTicks() - start)
+			SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
 	}
 
 	// FREE
-	for (vector<Enemy>::iterator it = enemies.begin(); it != enemies.end(); ++it)
-		SDL_FreeSurface((*it).getImage());
-	for (vector<Tower>::iterator it = towers.begin(); it != towers.end(); ++it)
-		SDL_FreeSurface((*it).getImage());
+	for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end(); ++enemy)
+		SDL_FreeSurface((*enemy).getImage());
+	for (vector<Tower>::iterator tower = towers.begin(); tower != towers.end(); ++tower)
+		SDL_FreeSurface((*tower).getImage());
 
 	SDL_FreeSurface(background);
 	SDL_FreeSurface(gameover);
 	SDL_FreeSurface(menu);
 	SDL_FreeSurface(towersImg);
+	SDL_FreeSurface(mouse);
+	SDL_FreeSurface(towerSelected);
 	SDL_FreeSurface(life);
+	SDL_FreeSurface(money);
+	SDL_FreeSurface(points);
 
-	TTF_CloseFont(font40);
+	TTF_CloseFont(font20);
 	TTF_CloseFont(font100);
 	
 	TTF_Quit();

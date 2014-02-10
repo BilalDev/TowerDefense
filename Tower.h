@@ -16,12 +16,13 @@
 		void		fire();
 		void		collision(std::vector<Enemy> *enemies);
 		// GETTER SETTER
-		int			getType();
 		SDL_Rect	getFrame();
 		SDL_Rect	getPosition();
 		SDL_Surface	*getImage();
 		SDL_Rect	getPositionBullet();
 		SDL_Surface	*getBullet();
+		int			getType();
+		int			getPrice();
 	
 	private:
 		SDL_Rect	current_frame;
@@ -30,6 +31,7 @@
 		SDL_Rect	positionBullet;
 		SDL_Surface *bullet;
 		int			type;
+		int			price;
 	};
 
 #endif /* !TOWER_H */

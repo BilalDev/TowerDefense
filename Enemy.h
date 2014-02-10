@@ -18,13 +18,14 @@
 		void animate(int direction);
 		void destruction();
 		// GETTER SETTER
-		int			getLife();
-		void		setLife(int new_life);
-		int			getVelocity();
-		int			getType();
 		SDL_Rect	getFrame();
 		SDL_Rect	getPosition();
 		SDL_Surface	*getImage();
+		int			getType();
+		int			getLife();
+		void		setLife(int new_life);
+		int			getVelocity();
+		int			getPoints();
 
 
 	private:
@@ -34,6 +35,7 @@
 		int			type;
 		int			life;
 		int			velocity;
+		int			points;
 	};
 
 #endif /* !ENEMY_H */
