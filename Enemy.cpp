@@ -229,11 +229,11 @@ void Enemy::destruction()
 {
 	if (life == 0)
 	{
-		image = IMG_Load("image/explosion.png");
+		image			= IMG_Load("image/explosion.png");
 		current_frame.x = -SIZE_BLOCK;
 		current_frame.y = 0;
 		current_frame.h = SIZE_BLOCK;
 		current_frame.w = SIZE_BLOCK;
-		life = -1;
+		life			= -1;
 	}
 }

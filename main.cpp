@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	// TOWER SELECTED
 	SDL_Surface *towerSelected = NULL;
 	SDL_Rect	positionTowerSelected, frameTowerSelected;
-	bool		isTowerSelected, isTowerPlaced;
+	bool		isTowerSelected, hasEnoughMoney;
 
 	// CONTROL FPS
 	Uint32 start;
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 	positionLife.x = 700;
 	positionLife.y = positionPoints.y + 35;
 
-	textMoney = "MONEY : " + to_string(valueMoney);
+	textMoney = "MONEY : " + to_string(valueMoney) + "$";
 	money = TTF_RenderText_Blended(font20, textMoney.c_str(), white);
 	positionMoney.x = 700;
 	positionMoney.y = positionPoints.y + 70;
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
 	towerSelected = IMG_Load("image/mini-towers.png");
 	positionTowerSelected = { 0, 0 };
 	frameTowerSelected = { 0, 0, SIZE_BLOCK, SIZE_BLOCK };
-	isTowerSelected = isTowerPlaced = false;
+	isTowerSelected = hasEnoughMoney = false;
 
 	// DEBUG
 	// INIT MOUSE INFORMATION
@@ -142,25 +142,54 @@ int main(int argc, char** argv)
 					{
 						if (event.motion.x >= 0 && event.motion.x < sizeTowers)
 						{
-							frameTowerSelected.x = 0 * SIZE_BLOCK;
-							typeTower = 1;
+							if (valueMoney >= 1000)
+							{
+								frameTowerSelected.x = 0 * SIZE_BLOCK;
+								typeTower = 1;
+								hasEnoughMoney = true;
+								isTowerSelected = true;
+								valueMoney -= 1000;
+								textMoney = "MONEY : " + to_string(valueMoney) + "$";
+								money = TTF_RenderText_Blended(font20, textMoney.c_str(), white);
+							}
+							else
+								hasEnoughMoney = false;
 						}
 						else if (event.motion.x >= sizeTowers && event.motion.x < 2 * sizeTowers)
 						{
-							frameTowerSelected.x = 1 * SIZE_BLOCK;
-							typeTower = 2;
+							if (valueMoney >= 500)
+							{
+								frameTowerSelected.x = 1 * SIZE_BLOCK;
+								typeTower = 2;
+								hasEnoughMoney = true;
+								isTowerSelected = true;
+								valueMoney -= 500;
+								textMoney = "MONEY : " + to_string(valueMoney) + "$";
+								money = TTF_RenderText_Blended(font20, textMoney.c_str(), white);
+							}
+							else
+								hasEnoughMoney = false;
 						}
 						else if (event.motion.x >= 2 * sizeTowers && event.motion.x < 3 * sizeTowers)
 						{
-							frameTowerSelected.x = 2 * SIZE_BLOCK;
-							typeTower = 3;
+							if (valueMoney >= 100)
+							{
+								frameTowerSelected.x = 2 * SIZE_BLOCK;
+								typeTower = 3;
+								hasEnoughMoney = true;
+								isTowerSelected = true;
+								valueMoney -= 100;
+								textMoney = "MONEY : " + to_string(valueMoney) + "$";
+								money = TTF_RenderText_Blended(font20, textMoney.c_str(), white);
+							}
+							else
+								hasEnoughMoney = false;
 						}
 						positionTowerSelected.x = event.motion.x - (SIZE_BLOCK / 2);
 						positionTowerSelected.y = event.motion.y - (SIZE_BLOCK / 2);
-						isTowerSelected = true;
 					}
 				}
-				else if (isTowerSelected)
+				else if (isTowerSelected && hasEnoughMoney)
 				{
 					isTowerSelected = false;
 					Tower t = Tower(typeTower, positionTowerSelected);
@@ -206,10 +235,16 @@ int main(int argc, char** argv)
 
 				(*enemy).move();
 
-				// if destruction finished, free then delete from vector
+				// if destruction finished, free then delete from vector and add money$$$$
 				if ((*enemy).getLife() == -2)
 				{
+					// FREE SURFACE
 					SDL_FreeSurface((*enemy).getImage());
+					// ADD MONEY
+					valueMoney += (*enemy).getPoints();
+					textMoney = "MONEY : " + to_string(valueMoney) + "$";
+					money = TTF_RenderText_Blended(font20, textMoney.c_str(), white);
+					// DELETE FROM VECTOR
 					enemies.erase(enemy);
 					break;
 				}
