@@ -5,7 +5,7 @@ Enemy::Enemy()
 {}
 
 
-Enemy::Enemy(int type_enemy) : type(type_enemy)
+Enemy::Enemy(int type_enemy, int time) : type(type_enemy), animation_time(time)
 {
 	SDL_Rect pos = { 0, 105 };
 	
@@ -89,69 +89,69 @@ int Enemy::getPoints()
 }
 
 
-void Enemy::move()
+void Enemy::move(int time)
 {
 	if (life > 0)
 	{
 		if (position.x >= 0 && position.x <= 190 && position.y <= 105)
 		{
 			position.x += velocity;
-			animate(RIGHT);
+			animate(RIGHT, time);
 		}
 		else if (position.x >= 190 && position.x <= 250 && position.y <= 520)
 		{
 			position.y += velocity;
-			animate(DOWN);
+			animate(DOWN, time);
 		}
 		else if (position.x >= 190 && position.x <= 380 && position.y >= 520)
 		{
 			position.x += velocity;
-			animate(RIGHT);
+			animate(RIGHT, time);
 		}
 		else if (position.x >= 380 && position.x <= 565 && position.y >= 105)
 		{
 			position.y -= velocity;
-			animate(UP);
+			animate(UP, time);
 		}
 		else if (position.x >= 380 && position.x <= 565 && position.y <= 105)
 		{
 			position.x += velocity;
-			animate(RIGHT);
+			animate(RIGHT, time);
 		}
 		else if (position.x >= 565 && position.x <= 640 && position.y <= 300)
 		{
 			position.y += velocity;
-			animate(DOWN);
+			animate(DOWN, time);
 		}
 		else if (position.x >= 566 && position.x <= 680 && position.y >= 300)
 		{
 			position.x += velocity;
-			animate(RIGHT);
+			animate(RIGHT, time);
 		}
 		else if (position.x >= 680 && position.x <= 760 && position.y >= 10 && position.y <= 305)
 		{
 			position.y -= velocity;
-			animate(UP);
+			animate(UP, time);
 		}
 		else if (position.x >= 680 && position.x <= 850 && position.y <= 10)
 		{
 			position.x += velocity;
-			animate(RIGHT);
+			animate(RIGHT, time);
 		}
 		else if (position.x >= 850 && position.x <= 900 && position.y <= 440)
 		{
 			position.y += velocity;
-			animate(DOWN);
+			animate(DOWN, time);
 		}
 		else if (position.x >= 720 && position.x <= 900 && position.y >= 440)
 		{
 			position.x -= velocity;
-			animate(LEFT);
+			animate(LEFT, time);
 		}
 		else if (position.x >= 700 && position.x <= 800 && position.y <= 620)
 		{
 			position.y += velocity;
-			animate(DOWN);
+			animate(DOWN, time);
 		}
 	}
 	else if (life == -1)
@@ -204,23 +204,27 @@ void Enemy::change_direction(int direction)
 }
 
 
-void Enemy::animate(int direction)
+void Enemy::animate(int direction, int time)
 {
 	change_direction(direction);
 
-	if (type == 1)
+	if (type == 1 && (time >= animation_time))
 	{
 		if (current_frame.x == 2 * SIZE_BLOCK)
 			current_frame.x = 0;
 		else
 			current_frame.x += SIZE_BLOCK;
+
+		animation_time += 200;
 	}
-	if (type == 3)
+	if (type == 3 && (time >= animation_time))
 	{
 		if (current_frame.x == SIZE_BLOCK)
 			current_frame.x = 0;
 		else
 			current_frame.x += SIZE_BLOCK;
+
+		animation_time += 200;
 	}
 }
 

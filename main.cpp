@@ -1,6 +1,7 @@
 #include "header.h"
 #include "Enemy.h"
 #include "Tower.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -36,8 +37,10 @@ int main(int argc, char** argv)
 	SDL_Rect	positionTowerSelected, frameTowerSelected;
 	bool		isTowerSelected, hasEnoughMoney;
 
-	// CONTROL FPS
+	// CONTROL TIME
 	Uint32 start;
+	Timer timer;
+	int spotTime;
 
 	// DEBUG
 	// MOUSE INFORMATION
@@ -99,7 +102,8 @@ int main(int argc, char** argv)
 
 
 
-
+	timer.start();
+	spotTime = timer.getTicks() + 1000;
 	// MAIN GAME LOOP
 	while (play)
 	{
@@ -140,6 +144,7 @@ int main(int argc, char** argv)
 				{
 					if (event.motion.y >= positionTowers.y && event.motion.x <= (3 * sizeTowers))
 					{
+						// ENEMY TYPE 1
 						if (event.motion.x >= 0 && event.motion.x < sizeTowers)
 						{
 							if (valueMoney >= 1000)
@@ -155,6 +160,7 @@ int main(int argc, char** argv)
 							else
 								hasEnoughMoney = false;
 						}
+						// ENEMY TYPE 2
 						else if (event.motion.x >= sizeTowers && event.motion.x < 2 * sizeTowers)
 						{
 							if (valueMoney >= 500)
@@ -170,6 +176,7 @@ int main(int argc, char** argv)
 							else
 								hasEnoughMoney = false;
 						}
+						// ENEMY TYPE 3
 						else if (event.motion.x >= 2 * sizeTowers && event.motion.x < 3 * sizeTowers)
 						{
 							if (valueMoney >= 100)
@@ -203,6 +210,7 @@ int main(int argc, char** argv)
 
 
 
+
 		// LOGIC
 		if (valueLife > 0)
 		{
@@ -214,12 +222,14 @@ int main(int argc, char** argv)
 			}
 
 			// ENEMY'S LOGIC
-			if (SDL_GetTicks() % 300 == 0)
+			if (timer.getTicks() >= spotTime)
 			{
+				// Enemy spots every 1s
+				spotTime = timer.getTicks() + 2000;
+				
 				// RAND [1 ; 3];
-				int random = std::rand() % (4 - 1) + 1;
-
-				Enemy e = Enemy(random);
+				int randType = std::rand() % (4 - 1) + 1;
+				Enemy e = Enemy(randType, timer.getTicks());
 				enemies.push_back(e);
 			}
 			for (vector<Enemy>::iterator enemy = enemies.begin(); enemy != enemies.end(); ++enemy)
@@ -233,7 +243,7 @@ int main(int argc, char** argv)
 					points = TTF_RenderText_Blended(font20, textPoints.c_str(), white);
 				}
 
-				(*enemy).move();
+				(*enemy).move(timer.getTicks());
 
 				// if destruction finished, free then delete from vector and add money$$$$
 				if ((*enemy).getLife() == -2)

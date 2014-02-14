@@ -10,12 +10,12 @@
 	public:
 		// CTOR DTOR
 		Enemy();
-		Enemy(int type_enemy);
+		Enemy(int type_enemy, int time);
 		~Enemy();
 		// METHOD
-		void move();
+		void move(int time);
 		void change_direction(int direction);
-		void animate(int direction);
+		void animate(int direction, int time);
 		void destruction();
 		// GETTER SETTER
 		SDL_Rect	getFrame();
@@ -36,6 +36,7 @@
 		int			life;
 		int			velocity;
 		int			points;
+		int			animation_time;
 	};
 
 #endif /* !ENEMY_H */
