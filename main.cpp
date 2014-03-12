@@ -199,7 +199,7 @@ int main(int argc, char** argv)
 				else if (isTowerSelected && hasEnoughMoney)
 				{
 					isTowerSelected = false;
-					Tower t = Tower(typeTower, positionTowerSelected);
+					Tower t = Tower(typeTower, positionTowerSelected, timer.getTicks());
 					towers.push_back(t);
 				}
 				break;
@@ -217,7 +217,7 @@ int main(int argc, char** argv)
 			// TOWER'S LOGIC
 			for (vector<Tower>::iterator tower = towers.begin(); tower != towers.end(); ++tower)
 			{
-				(*tower).fire();
+				(*tower).fire(timer.getTicks());
 				(*tower).collision(&enemies);
 			}
 

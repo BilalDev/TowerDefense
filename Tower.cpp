@@ -6,7 +6,7 @@ Tower::Tower()
 {}
 
 
-Tower::Tower(int type_tower, SDL_Rect pos) : type(type_tower), position(pos)
+Tower::Tower(int type_tower, SDL_Rect pos, int time) : type(type_tower), position(pos), animation_time(time)
 {
 	if (type_tower == 1)
 	{
@@ -77,18 +77,21 @@ int Tower::getPrice()
 }
 
 
-void Tower::fire()
+void Tower::fire(int time)
 {
-	if (positionBullet.y == 0)
+	if (time >= animation_time)
 	{
-		positionBullet.x = position.x + (SIZE_BLOCK / 2 - bullet->w / 2);
-		positionBullet.y = position.y + (SIZE_BLOCK / 2);
-	}
+		if (positionBullet.y == 0)
+		{
+			positionBullet.x = position.x + (SIZE_BLOCK / 2 - bullet->w / 2);
+			positionBullet.y = position.y + (SIZE_BLOCK / 2);
+		}
 
-	else
-	{
-		positionBullet = getPositionBullet();
-		positionBullet.y += 5;
+		else
+		{
+			positionBullet = getPositionBullet();
+			positionBullet.y += 5;
+		}
 	}
 }
 
@@ -132,6 +135,7 @@ void Tower::collision(vector<Enemy> *enemies)
 			{
 				positionBullet.y = position.y + (SIZE_BLOCK / 2);
 				enemy->setLife(enemy->getLife() - 1);
+				animation_time += SDL_GetTicks() + 50;
 			}
 		}
 	}

@@ -9,11 +9,10 @@
 	public:
 		// CTOR DTOR
 		Tower();
-		Tower(int type_tower, SDL_Rect pos);
-		Tower(SDL_Surface *img, SDL_Rect *frame, SDL_Rect *pos, int type_tower);
+		Tower(int type_tower, SDL_Rect pos, int time);
 		~Tower();
 		// METHOD
-		void		fire();
+		void		fire(int time);
 		void		collision(std::vector<Enemy> *enemies);
 		// GETTER SETTER
 		SDL_Rect	getFrame();
@@ -32,6 +31,7 @@
 		SDL_Surface *bullet;
 		int			type;
 		int			price;
+		int			animation_time;
 	};
 
 #endif /* !TOWER_H */
